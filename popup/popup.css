@@ -1,0 +1,135 @@
+body {
+    font-family: sans-serif;
+    width: 250px;
+    padding: 10px;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.setting p {
+    margin: 0;
+}
+/* Updated to allow label to grow and add space */
+.setting label {
+    flex-grow: 1; /* Allow label to take available space */
+    margin-right: 10px; /* Add some space between label and input */
+}
+.setting input[type="number"] {
+    width: 60px; /* Fixed width for number inputs, was 50px, adjusting to new spec */
+}
+label { /* General label styling, ensure it doesn't conflict or make specific if needed */
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.status {
+    font-size: 0.9em;
+    color: green;
+    text-align: center;
+    min-height: 1em; /* Ensure space for the message */
+}
+
+/* Styles for keyword management */
+hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 10px 0;
+}
+#customKeywordsList {
+    list-style-type: none;
+    padding: 0;
+    max-height: 100px; /* Example max height */
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-top: 5px; /* Space above the list */
+}
+#customKeywordsList li {
+    padding: 5px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+}
+#customKeywordsList li:last-child {
+    border-bottom: none;
+}
+#customKeywordsList button {
+    background-color: #ffcccc;
+    border: 1px solid #ffaaaa;
+    color: #aa0000;
+    cursor: pointer;
+    padding: 2px 5px;
+    font-size: 0.8em;
+    border-radius: 3px;
+}
+#newKeywordInput {
+    flex-grow: 1; /* Take available space */
+    margin-right: 5px;
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+#addKeywordButton {
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.radio-group { /* To better align radio buttons */
+    display: flex;
+    flex-direction: column; /* Stack radio buttons vertically */
+    align-items: flex-start; /* Align items to the start of the flex container */
+    gap: 5px; /* Space between radio buttons */
+}
+.radio-group label {
+    justify-content: flex-start; /* Align radio button and text to the left */
+    width: 100%; /* Ensure labels take full width for alignment */
+}
+
+/* Styles for Recently Hidden Videos section */
+#recentlyHiddenSection {
+    margin-top: 15px;
+}
+#recentlyHiddenList {
+    list-style-type: none;
+    padding: 0;
+    max-height: 150px; /* Example max height */
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-top: 5px;
+}
+#recentlyHiddenList li {
+    padding: 5px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+}
+#recentlyHiddenList li:last-child {
+    border-bottom: none;
+}
+#recentlyHiddenList button { /* Style for unhide buttons */
+    background-color: #ccffcc;
+    border: 1px solid #aaffaa;
+    color: #006600;
+    cursor: pointer;
+    padding: 2px 5px;
+    font-size: 0.8em;
+    border-radius: 3px;
+}
+#recentlyHiddenList .video-title {
+    font-size: 0.9em;
+    overflow-wrap: break-word;
+    margin-right: 5px;
+    flex-grow: 1;
+}

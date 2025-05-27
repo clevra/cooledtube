@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>YouTube Clickbait Filter Settings</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <h2>YouTube Clickbait Filter</h2>
+
+        <div class="setting">
+            <label for="masterToggle">Enable Filter:</label>
+            <input type="checkbox" id="masterToggle">
+        </div>
+
+        <div class="setting">
+            <p>Action on Clickbait:</p>
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="action" value="grayOut" id="actionGrayOut"> Gray Out
+                </label>
+                <label>
+                    <input type="radio" name="action" value="hide" id="actionHide"> Hide
+                </label>
+            </div>
+        </div>
+        
+        <hr>
+        <h3>Sensitivity Controls</h3>
+        <div class="setting">
+            <label for="maxEmojisAllowed">Max Emojis Allowed (e.g., 3):</label>
+            <input type="number" id="maxEmojisAllowed" min="0" step="1" style="width: 50px;">
+        </div>
+        <div class="setting">
+            <label for="capitalizationThreshold">Capitalization Threshold (0.0-1.0, e.g., 0.5 for 50%):</label>
+            <input type="number" id="capitalizationThreshold" min="0" max="1" step="0.1" style="width: 50px;">
+        </div>
+
+        <hr> 
+
+        <h3>Custom Keywords</h3>
+        <div class="setting">
+            <input type="text" id="newKeywordInput" placeholder="Add a keyword/phrase">
+            <button id="addKeywordButton">Add</button>
+        </div>
+        <ul id="customKeywordsList">
+            <!-- Keywords will be listed here by popup.js -->
+        </ul>
+        
+        <hr>
+
+        <div id="recentlyHiddenSection" style="display: none;">
+            <h3>Recently Hidden Videos (Current Session)</h3>
+            <button id="refreshHiddenListButton">Refresh List</button>
+            <ul id="recentlyHiddenList">
+                <!-- Hidden videos will be listed here -->
+            </ul>
+        </div>
+        
+        <p class="status" id="statusMessage"></p>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>
