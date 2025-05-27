@@ -133,3 +133,17 @@ hr {
     margin-right: 5px;
     flex-grow: 1;
 }
+
+/* Styles for "Open Settings in New Tab" link */
+.footer-actions {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+.footer-actions a {
+    color: #007bff; /* Standard link blue */
+    text-decoration: none;
+}
+.footer-actions a:hover {
+    text-decoration: underline;
+}

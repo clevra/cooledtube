@@ -12,10 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const maxEmojisAllowedInput = document.getElementById('maxEmojisAllowed');
     const capitalizationThresholdInput = document.getElementById('capitalizationThreshold');
 
-    // New elements for "Recently Hidden Videos"
     const recentlyHiddenSection = document.getElementById('recentlyHiddenSection');
     const refreshHiddenListButton = document.getElementById('refreshHiddenListButton');
-    const recentlyHiddenListUL = document.getElementById('recentlyHiddenList'); // Renamed for clarity
+    const recentlyHiddenListUL = document.getElementById('recentlyHiddenList');
+
+    // New element for "Open Settings in New Tab"
+    const openInTabLink = document.getElementById('openInTabLink');
 
     let currentKeywords = []; 
 
@@ -48,9 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             removeButton.addEventListener('click', (event) => {
                 const keywordIndexToRemove = parseInt(event.target.dataset.index, 10);
-                currentKeywords.splice(keywordIndexToRemove, 1);
-                browser.storage.local.set({ customKeywords: currentKeywords }).then(() => {
-                    renderKeywords();
+                let updatedKeywords = [...currentKeywords]; 
+                updatedKeywords.splice(keywordIndexToRemove, 1);
+
+                browser.storage.local.set({ customKeywords: updatedKeywords }).then(() => {
+                    currentKeywords = updatedKeywords; 
+                    renderKeywords(); 
                     showStatus('Keyword removed.');
                 }).catch(err => {
                     console.error("Error saving keywords after removal:", err);
@@ -64,9 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Functions for "Recently Hidden Videos" ---
     function renderHiddenVideoList(hiddenVideos) {
-        recentlyHiddenListUL.innerHTML = ''; // Clear list
+        recentlyHiddenListUL.innerHTML = ''; 
         if (!hiddenVideos || hiddenVideos.length === 0) {
             const li = document.createElement('li');
             li.textContent = 'No videos hidden in this session or action is not "Hide".';
@@ -81,12 +85,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const titleSpan = document.createElement('span');
             titleSpan.className = 'video-title';
             titleSpan.textContent = video.title;
-            titleSpan.title = video.title; // Tooltip for long titles
+            titleSpan.title = video.title; 
 
             const unhideButton = document.createElement('button');
             unhideButton.textContent = 'Unhide';
             unhideButton.dataset.videoId = video.id;
-            unhideButton.addEventListener('click', handleUnhideClick); // Attach listener directly
+            unhideButton.addEventListener('click', handleUnhideClick); 
 
             li.appendChild(titleSpan);
             li.appendChild(unhideButton);
@@ -104,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await browser.tabs.sendMessage(tabs[0].id, { action: "unhideVideo", videoId: videoId });
                 if (response && response.success) {
                     showStatus(response.message || 'Video unhidden.');
-                    fetchAndDisplayHiddenVideos(); // Refresh the list
+                    fetchAndDisplayHiddenVideos(); 
                 } else {
                     showStatus(response.message || 'Failed to unhide video.', true);
                 }
@@ -113,7 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Error unhiding video:', error);
-            // Check for common errors like "No matching message listener"
             if (error.message && error.message.includes("Could not establish connection")) {
                  showStatus('Error: Content script not responding. Try refreshing the YouTube page.', true);
             } else {
@@ -124,11 +127,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchAndDisplayHiddenVideos() {
         if (recentlyHiddenSection.style.display === 'none') {
-            renderHiddenVideoList([]); // Clear list if section is not visible
+            renderHiddenVideoList([]); 
             return;
         }
-        // Optional: Add a loading indicator here
-        // recentlyHiddenListUL.innerHTML = '<li>Loading...</li>'; 
         try {
             const tabs = await browser.tabs.query({ active: true, currentWindow: true });
             if (tabs[0] && tabs[0].id) {
@@ -140,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     showStatus(response && response.message ? response.message : 'Could not fetch hidden videos list.', true);
                 }
             } else {
-               renderHiddenVideoList([]); // No active tab
+               renderHiddenVideoList([]); 
                showStatus('Cannot find active tab to fetch hidden videos.', true);
             }
         } catch (error) {
@@ -156,7 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     refreshHiddenListButton.addEventListener('click', fetchAndDisplayHiddenVideos);
 
-    // Load saved settings
     browser.storage.local.get([
         'filterEnabled', 'selectedAction', 'customKeywords',
         'maxEmojisSetting', 'capitalizationThresholdSetting'
@@ -172,20 +172,18 @@ document.addEventListener('DOMContentLoaded', () => {
         maxEmojisAllowedInput.value = result.maxEmojisSetting !== undefined ? result.maxEmojisSetting : 3;
         capitalizationThresholdInput.value = result.capitalizationThresholdSetting !== undefined ? result.capitalizationThresholdSetting : 0.5;
 
-        // Visibility of "Recently Hidden" section
         if (currentAction === 'hide') {
             recentlyHiddenSection.style.display = 'block';
             fetchAndDisplayHiddenVideos();
         } else {
             recentlyHiddenSection.style.display = 'none';
-            renderHiddenVideoList([]); // Clear list when not in hide mode
+            renderHiddenVideoList([]); 
         }
     }).catch(error => {
         console.error(`Error loading settings: ${error}`);
         showStatus('Error loading settings.', true);
     });
 
-    // Save basic settings
     masterToggle.addEventListener('change', () => {
         browser.storage.local.set({ filterEnabled: masterToggle.checked })
             .then(() => showStatus('Settings saved.'))
@@ -199,13 +197,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 browser.storage.local.set({ selectedAction: newAction })
                     .then(() => {
                         showStatus('Action saved.');
-                        // Update visibility of "Recently Hidden" section
                         if (newAction === 'hide') {
                             recentlyHiddenSection.style.display = 'block';
                             fetchAndDisplayHiddenVideos();
                         } else {
                             recentlyHiddenSection.style.display = 'none';
-                            renderHiddenVideoList([]); // Clear list
+                            renderHiddenVideoList([]); 
                         }
                     })
                     .catch(err => { console.error(err); showStatus('Error saving action.', true);});
@@ -216,12 +213,15 @@ document.addEventListener('DOMContentLoaded', () => {
     addKeywordButton.addEventListener('click', () => {
         const newKeyword = newKeywordInput.value.trim();
         if (newKeyword) {
-            if (currentKeywords.map(k => k.toLowerCase()).includes(newKeyword.toLowerCase())) {
+            let updatedKeywords = [...currentKeywords]; 
+            if (updatedKeywords.map(k => k.toLowerCase()).includes(newKeyword.toLowerCase())) {
                 showStatus('Keyword already exists.', true);
                 return;
             }
-            currentKeywords.push(newKeyword); 
-            browser.storage.local.set({ customKeywords: currentKeywords }).then(() => {
+            updatedKeywords.push(newKeyword);
+
+            browser.storage.local.set({ customKeywords: updatedKeywords }).then(() => {
+                currentKeywords = updatedKeywords; 
                 renderKeywords(); 
                 newKeywordInput.value = ''; 
                 showStatus('Keyword added.');
@@ -257,4 +257,35 @@ document.addEventListener('DOMContentLoaded', () => {
             browser.storage.local.get('capitalizationThresholdSetting').then(res => capitalizationThresholdInput.value = res.capitalizationThresholdSetting !== undefined ? res.capitalizationThresholdSetting : 0.5);
         }
     });
+
+    // --- "Open Settings in New Tab" Logic ---
+    if (openInTabLink) { 
+        openInTabLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            browser.tabs.create({
+                url: browser.runtime.getURL("popup/popup.html")
+            }).then(() => {
+                // Optional: Close the popup. User can uncomment if this behavior is desired.
+                // window.close(); 
+            }).catch(err => {
+                console.error("Error opening settings in new tab:", err);
+                showStatus("Failed to open settings in new tab.", true);
+            });
+        });
+    }
+
+    // Hide "Open in Tab" link if already in a tab.
+    // Using a simple protocol check; more robust checks could involve query params.
+    if (window.location.protocol === 'moz-extension:') {
+        // Heuristic to guess if it's a popup window vs a tab
+        // Popups usually have a smaller, constrained size.
+        // This is not foolproof but often works.
+        const isLikelyPopup = window.innerHeight <= 800 && window.innerWidth <= 600; 
+        
+        if (openInTabLink) {
+            if (!isLikelyPopup) { // If it's NOT likely a popup (i.e., it's a tab)
+                openInTabLink.style.display = 'none';
+            }
+        }
+    }
 });

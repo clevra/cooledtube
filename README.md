@@ -22,8 +22,7 @@ This Firefox browser extension helps you curate your YouTube feed by identifying
     *   Manage custom keywords (add/remove).
     *   Adjust sensitivity thresholds for emoji count and capitalization percentage.
     *   View a list of recently hidden videos (if "Hide" action is active for the current session) and unhide them individually.
-*   **Persistent Settings:** All user configurations are saved locally.
-*   **Dynamic Updates:** Changes made in the popup are reflected on YouTube pages without needing a reload.
+    *   An "Open Settings in New Tab" link in the popup for a more persistent view of the settings page.
 
 ## File Structure
 
@@ -65,6 +64,10 @@ This Firefox browser extension helps you curate your YouTube feed by identifying
 
 5.  **Making Changes:**
     *   If you modify the code (e.g., `content_script.js`), you'll need to reload the extension from the `about:debugging` page. Click the "Reload" button for the temporary add-on.
+
+## Usage Notes
+
+*   **Popup Behavior:** Standard browser extension popups (opened by clicking the toolbar icon) are designed to close automatically when you click outside of them. For more complex settings adjustments where you might need the interface to stay open, use the "Open Settings in New Tab" link found at the bottom of the popup. This will open the settings interface in a regular browser tab.
 
 ## Development Notes
 
